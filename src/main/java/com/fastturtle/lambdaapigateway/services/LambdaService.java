@@ -10,7 +10,7 @@ import software.amazon.awssdk.services.lambda.model.InvokeResponse;
 @Service
 public class LambdaService {
 
-    private LambdaClient lambdaClient;
+    private final LambdaClient lambdaClient;
 
     public LambdaService() {
         this.lambdaClient = LambdaClient.builder().build();

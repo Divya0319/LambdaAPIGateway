@@ -1,5 +1,7 @@
 package com.fastturtle.lambdaapigateway.services;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fastturtle.lambdaapigateway.models.Request;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.core.SdkBytes;
@@ -19,24 +21,22 @@ public class LambdaService {
     public String invokeLambdaForTTSUsingPolly(Request request) {
         String payload;
 
-        if(request.getVoiceId() != null) {
-            payload = "{"
-                    + "\"text\": " + request.getText() + ", "
-                    + "\"voiceId\": " + request.getVoiceId()
-                    +"}";
-        } else {
-            payload = "{"
-                    + "\"text\": " + request.getText()
-                    +"}";
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        try {
+            payload = objectMapper.writeValueAsString(request);
+
+            InvokeRequest invokeRequest = InvokeRequest.builder()
+                    .functionName("LambdaForTTSUsingPolly")
+                    .payload(SdkBytes.fromUtf8String(payload))
+                    .build();
+
+            InvokeResponse response = lambdaClient.invoke(invokeRequest);
+
+            return response.payload().asUtf8String();
+
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("Error serialising request", e);
         }
-
-        InvokeRequest invokeRequest = InvokeRequest.builder()
-                .functionName("LambdaForTTSUsingPolly")
-                .payload(SdkBytes.fromUtf8String(payload))
-                .build();
-
-        InvokeResponse response = lambdaClient.invoke(invokeRequest);
-
-        return response.payload().asUtf8String();
     }
 }

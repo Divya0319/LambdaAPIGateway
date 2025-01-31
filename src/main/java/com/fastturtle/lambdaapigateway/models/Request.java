@@ -1,8 +1,12 @@
 package com.fastturtle.lambdaapigateway.models;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 public class Request {
 
     private String text;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String voiceId;
 
     public String getText() {

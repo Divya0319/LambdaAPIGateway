@@ -1,17 +1,19 @@
 package com.fastturtle.lambdaapigateway.services;
 
 import com.fastturtle.lambdaapigateway.models.Request;
+import org.springframework.stereotype.Service;
 import software.amazon.awssdk.core.SdkBytes;
 import software.amazon.awssdk.services.lambda.LambdaClient;
 import software.amazon.awssdk.services.lambda.model.InvokeRequest;
 import software.amazon.awssdk.services.lambda.model.InvokeResponse;
 
+@Service
 public class LambdaService {
 
     private LambdaClient lambdaClient;
 
-    public LambdaService(LambdaClient lambdaClient) {
-        this.lambdaClient = lambdaClient;
+    public LambdaService() {
+        this.lambdaClient = LambdaClient.builder().build();
     }
 
     public String invokeLambdaForTTSUsingPolly(Request request) {
